@@ -1,0 +1,118 @@
+{
+  "generation": 3,
+  "population": [
+    {
+      "id": "4dc07541-f16f-4853-84cc-a2b27b0017fd",
+      "genes": [
+        4.020090697188186,
+        -5.004089614293823,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "3dc84037-4e94-4465-a98d-0736f4abada8",
+        "18998bc1-6815-4c71-85c4-bd3381039422"
+      ]
+    },
+    {
+      "id": "d6c4c5c0-8123-4c4b-a8f8-f2e09e584f64",
+      "genes": [
+        5.424975616057143,
+        -5.228294712373213,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "38561252-0010-4498-82a4-a0a4367416cd",
+        "13da1a25-af99-4a8e-9132-85be3afaae9c"
+      ]
+    },
+    {
+      "id": "0fdb3d64-b263-4336-8c4d-07a26d7edfa4",
+      "genes": [
+        1.1037448335685611,
+        -5.004089614293823,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "b61275a7-4306-469f-80e8-1a59ab93d90c",
+        "b61275a7-4306-469f-80e8-1a59ab93d90c"
+      ]
+    },
+    {
+      "id": "3cd03cd4-5cb4-4e22-a1e0-eba47a980e72",
+      "genes": [
+        6.671055481119302,
+        -5.004089614293823,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "b61275a7-4306-469f-80e8-1a59ab93d90c",
+        "b61275a7-4306-469f-80e8-1a59ab93d90c"
+      ]
+    },
+    {
+      "id": "988524f7-27e8-495f-acab-0b913dbdb3a6",
+      "genes": [
+        5.424975616057143,
+        -5.228294712373213,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "13da1a25-af99-4a8e-9132-85be3afaae9c",
+        "13da1a25-af99-4a8e-9132-85be3afaae9c"
+      ]
+    },
+    {
+      "id": "77a46d84-034f-43bf-ae43-bcfc96441bef",
+      "genes": [
+        5.424975616057143,
+        -5.228294712373213,
+        0.0,
+        2.0
+      ],
+      "fitness": null,
+      "generation": 3,
+      "parents": [
+        "38561252-0010-4498-82a4-a0a4367416cd",
+        "38561252-0010-4498-82a4-a0a4367416cd"
+      ]
+    }
+  ],
+  "best_genome": {
+    "id": "b61275a7-4306-469f-80e8-1a59ab93d90c",
+    "genes": [
+      4.020090697188186,
+      -5.004089614293823,
+      0.0,
+      2.0
+    ],
+    "fitness": -42.2020420815023,
+    "generation": 2,
+    "parents": [
+      "3dc84037-4e94-4465-a98d-0736f4abada8",
+      "18998bc1-6815-4c71-85c4-bd3381039422"
+    ]
+  },
+  "stats": {
+    "generation": 3,
+    "population_size": 6,
+    "evaluated_count": 0,
+    "best_fitness": null,
+    "worst_fitness": null,
+    "avg_fitness": null
+  }
+}
