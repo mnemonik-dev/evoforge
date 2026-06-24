@@ -2,9 +2,8 @@
 
 EvoForge is a Rust-native evolutionary optimization toolkit.
 
-This repository starts by extracting the generic GA core ideas from Gregory
-Agent's `syntropy_engine` without Python bindings, trading-specific backtests,
-Redis telemetry, or NumPy/PyO3 dependencies.
+This repository provides a generic GA core without Python bindings,
+trading-specific backtests, Redis telemetry, or NumPy/PyO3 dependencies.
 
 ## Current Scope
 
