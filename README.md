@@ -21,7 +21,7 @@ trading-specific backtests, Redis telemetry, or NumPy/PyO3 dependencies.
 
 ## Out of Scope For This First Cut
 
-- Grammar-guided GP.
+- Grammar-guided GP. *(Now provided by the [`evoforge-grammar`](evoforge-grammar) sibling crate — see below — keeping the core itself GGGP-free.)*
 - Tree/program genomes.
 - Trading backtest logic.
 - Python bindings.
@@ -30,6 +30,18 @@ trading-specific backtests, Redis telemetry, or NumPy/PyO3 dependencies.
 
 Those should be added as separate modules or crates once the generic core is
 stable.
+
+## Sibling Crates
+
+- **[`evoforge-grammar`](evoforge-grammar)** — grammar-guided GP (**Grammatical
+  Evolution**) on top of this core. It decodes an arbitrary context-free grammar
+  from an integer codon vector, with the codons encoded as `evoforge` `Int` genes
+  so the core engine (selection, crossover, mutation, elitism, ask/tell,
+  deterministic RNG) drives the search unchanged. A `Target`/`Fitness` trait pair
+  keeps it DSL-agnostic. Status: **M0** (generic CFG + GE decoder) and **M1** (GE
+  engine) implemented; M2 (a first DSL target) next. See
+  [`evoforge-grammar/README.md`](evoforge-grammar/README.md).
+
 
 ## Minimal Example
 
