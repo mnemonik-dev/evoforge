@@ -39,6 +39,14 @@ impl GeneSpec {
         self
     }
 
+    pub fn to_json_string(&self) -> serde_json::Result<String> {
+        serde_json::to_string_pretty(self)
+    }
+
+    pub fn from_json_str(json: &str) -> serde_json::Result<Self> {
+        serde_json::from_str(json)
+    }
+
     pub fn validate(&self) -> Result<(), String> {
         if !self.min.is_finite() || !self.max.is_finite() || !self.default.is_finite() {
             return Err(format!(
@@ -57,6 +65,18 @@ impl GeneSpec {
                 "gene '{}' categorical options are empty",
                 self.name
             ));
+        }
+        if matches!(self.dtype, GeneType::Bool) && (self.min != 0.0 || self.max != 1.0) {
+            return Err(format!("gene '{}' bool bounds must be [0, 1]", self.name));
+        }
+        if let GeneType::Categorical(options) = &self.dtype {
+            let expected_max = options.len().saturating_sub(1) as f64;
+            if self.min != 0.0 || (self.max - expected_max).abs() > f64::EPSILON {
+                return Err(format!(
+                    "gene '{}' categorical bounds must be [0, {}]",
+                    self.name, expected_max
+                ));
+            }
         }
         Ok(())
     }
@@ -109,6 +129,14 @@ impl Default for EvolutionConfig {
 }
 
 impl EvolutionConfig {
+    pub fn to_json_string(&self) -> serde_json::Result<String> {
+        serde_json::to_string_pretty(self)
+    }
+
+    pub fn from_json_str(json: &str) -> serde_json::Result<Self> {
+        serde_json::from_str(json)
+    }
+
     pub fn validate(&self) -> Result<(), String> {
         if self.population_size == 0 {
             return Err("population_size must be > 0".to_string());

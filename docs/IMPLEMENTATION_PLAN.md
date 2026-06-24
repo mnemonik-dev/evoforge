@@ -21,6 +21,23 @@ EvoForge currently provides a small Rust-native numeric GA core:
 
 The crate is intentionally a reusable core, not an application. Apps provide fitness evaluation and own domain semantics.
 
+## Progress Update
+
+Implemented in the current development pass:
+
+- `EngineBuilder` for the numeric engine;
+- trait-based numeric evaluator integration;
+- serializable `GenerationReport`;
+- duplicate gene-name validation;
+- stricter bool and categorical bounds validation;
+- JSON roundtrip helpers for public config/schema types;
+- documented deterministic snapshot stability rules;
+- initial lexical genome module with vocabulary-backed token sequences;
+- lexical `ask` / `tell` and `run_to_completion` flows;
+- lexical app-use-case tests for command phrases, routing rules, batching, invalid input, unknown IDs, and seeded replay.
+
+The lexical module should still be treated as experimental. It is useful for fixed-length token search, but it does not yet provide grammar validity, per-position vocabularies, repair hooks, or operator-level golden fixtures.
+
 ## Product Direction
 
 EvoForge should become a general evolutionary optimization library for Rust apps.
@@ -274,8 +291,15 @@ Acceptance criteria:
 The next three implementation steps should be:
 
 1. Add `EngineState` save/load and deterministic resume golden fixture.
-2. Add `EngineBuilder`, duplicate gene-name validation, and better errors.
-3. Add trait-based evaluator and `GenerationReport`.
+2. Add crate-level rustdoc and README examples for numeric and lexical integration.
+3. Add operator-level tests and configuration for reset/one-point/two-point crossover and mutation policies.
+
+For lexical genomes specifically:
+
+1. Add per-position vocabulary constraints.
+2. Add validity or repair hooks for apps that have syntax constraints.
+3. Add a seeded golden lexical fixture.
+4. Add a benchmark for large vocabulary and long fixed-length sequences.
 
 These steps make EvoForge much more useful to apps without prematurely adding grammar GP, services, dashboards, or distributed workers.
 
@@ -290,4 +314,3 @@ These steps make EvoForge much more useful to apps without prematurely adding gr
 - Distributed cluster execution.
 
 All of those can be built later as adapters or sibling crates once the core is stable.
-

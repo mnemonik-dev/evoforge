@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
@@ -50,6 +50,60 @@ pub struct EngineSnapshot {
     pub stats: PopulationStats,
 }
 
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+pub struct GenerationReport {
+    pub generation: u64,
+    pub evolved: bool,
+    pub evaluated_count: usize,
+    pub best_fitness: Option<f64>,
+    pub worst_fitness: Option<f64>,
+    pub avg_fitness: Option<f64>,
+}
+
+#[derive(Clone, Debug, Default)]
+pub struct EngineBuilder {
+    schema: Vec<GeneSpec>,
+    config: EvolutionConfig,
+}
+
+impl EngineBuilder {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn schema(mut self, schema: Vec<GeneSpec>) -> Self {
+        self.schema = schema;
+        self
+    }
+
+    pub fn gene(mut self, gene: GeneSpec) -> Self {
+        self.schema.push(gene);
+        self
+    }
+
+    pub fn config(mut self, config: EvolutionConfig) -> Self {
+        self.config = config;
+        self
+    }
+
+    pub fn build(self) -> Result<Engine> {
+        Engine::new(self.schema, self.config)
+    }
+}
+
+pub trait Evaluator {
+    fn evaluate(&mut self, genes: &[f64]) -> f64;
+}
+
+impl<F> Evaluator for F
+where
+    F: FnMut(&[f64]) -> f64,
+{
+    fn evaluate(&mut self, genes: &[f64]) -> f64 {
+        self(genes)
+    }
+}
+
 /// Domain-neutral numeric genetic algorithm engine.
 pub struct Engine {
     schema: Vec<GeneSpec>,
@@ -63,12 +117,17 @@ pub struct Engine {
 }
 
 impl Engine {
+    pub fn builder() -> EngineBuilder {
+        EngineBuilder::new()
+    }
+
     pub fn new(schema: Vec<GeneSpec>, config: EvolutionConfig) -> Result<Self> {
         if schema.is_empty() {
             return Err(EvoForgeError::InvalidSchema(
                 "schema cannot be empty".to_string(),
             ));
         }
+        validate_unique_gene_names(&schema)?;
         for spec in &schema {
             spec.validate().map_err(EvoForgeError::InvalidSchema)?;
         }
@@ -149,6 +208,13 @@ impl Engine {
     where
         I: IntoIterator<Item = (Uuid, f64)>,
     {
+        Ok(self.tell_report(results)?.evolved)
+    }
+
+    pub fn tell_report<I>(&mut self, results: I) -> Result<GenerationReport>
+    where
+        I: IntoIterator<Item = (Uuid, f64)>,
+    {
         for (id, fitness) in results {
             let idx = *self
                 .id_index
@@ -171,18 +237,25 @@ impl Engine {
         if self.population.iter().all(Genome::is_evaluated) {
             if !self.is_finished() {
                 self.evolve_generation();
-                Ok(true)
+                Ok(self.generation_report(true))
             } else {
-                Ok(false)
+                Ok(self.generation_report(false))
             }
         } else {
-            Ok(false)
+            Ok(self.generation_report(false))
         }
     }
 
-    pub fn evaluate_generation<F>(&mut self, mut fitness: F) -> Result<()>
+    pub fn evaluate_generation<F>(&mut self, fitness: F) -> Result<()>
     where
         F: FnMut(&[f64]) -> f64,
+    {
+        self.evaluate_generation_report(fitness).map(|_| ())
+    }
+
+    pub fn evaluate_generation_report<E>(&mut self, mut evaluator: E) -> Result<GenerationReport>
+    where
+        E: Evaluator,
     {
         let candidates = self.ask(self.config.population_size);
         if candidates.is_empty() {
@@ -191,12 +264,11 @@ impl Engine {
         let results = candidates
             .into_iter()
             .map(|candidate| {
-                let score = fitness(&candidate.genes);
+                let score = evaluator.evaluate(&candidate.genes);
                 (candidate.id, score)
             })
             .collect::<Vec<_>>();
-        self.tell(results)?;
-        Ok(())
+        self.tell_report(results)
     }
 
     pub fn run_to_completion<F>(&mut self, mut fitness: F) -> Result<()>
@@ -233,6 +305,18 @@ impl Engine {
         self.generation = next_generation;
         self.id_index = build_id_index(&self.population);
     }
+
+    fn generation_report(&self, evolved: bool) -> GenerationReport {
+        let stats = self.stats();
+        GenerationReport {
+            generation: self.generation,
+            evolved,
+            evaluated_count: stats.evaluated_count,
+            best_fitness: stats.best_fitness,
+            worst_fitness: stats.worst_fitness,
+            avg_fitness: stats.avg_fitness,
+        }
+    }
 }
 
 impl From<&Genome> for GenomeSnapshot {
@@ -253,6 +337,19 @@ fn build_id_index(population: &[Genome]) -> HashMap<Uuid, usize> {
         .enumerate()
         .map(|(idx, genome)| (genome.id, idx))
         .collect()
+}
+
+fn validate_unique_gene_names(schema: &[GeneSpec]) -> Result<()> {
+    let mut names = HashSet::new();
+    for spec in schema {
+        if !names.insert(spec.name.as_str()) {
+            return Err(EvoForgeError::InvalidSchema(format!(
+                "duplicate gene name '{}'",
+                spec.name
+            )));
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]

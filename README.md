@@ -18,6 +18,7 @@ Redis telemetry, or NumPy/PyO3 dependencies.
 - Ask/tell optimization loop for external fitness evaluators.
 - Bounded `run_to_completion` API for simple in-process fitness functions.
 - Golden fixture tests for full seeded snapshots.
+- JSON roundtrip helpers on `GeneSpec` and `EvolutionConfig`.
 
 ## Out of Scope For This First Cut
 
@@ -89,6 +90,21 @@ values. The golden fixture at
 - best genome,
 - generation count,
 - population statistics.
+
+## Stability Contract
+
+The serialized shape of `GeneSpec`, `EvolutionConfig`, and the snapshot types
+is treated as part of the public API within a major version.
+
+- Patch releases may add new optional fields with defaults.
+- Patch releases must not reinterpret existing fields.
+- Any change that alters seeded snapshot output requires a new golden fixture
+  and an explicit release note.
+- Any breaking serialized-format change should wait for a major version bump.
+
+This means a deterministic run should stay deterministic across patch
+releases, but exact byte-for-byte JSON is only guaranteed for the same schema,
+config, seed, and crate version family.
 
 Run:
 
