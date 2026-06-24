@@ -38,8 +38,9 @@ stable.
   from an integer codon vector, with the codons encoded as `evoforge` `Int` genes
   so the core engine (selection, crossover, mutation, elitism, ask/tell,
   deterministic RNG) drives the search unchanged. A `Target`/`Fitness` trait pair
-  keeps it DSL-agnostic. Status: **M0** (generic CFG + GE decoder) and **M1** (GE
-  engine) implemented; M2 (a first DSL target) next. See
+  keeps it DSL-agnostic. Status: **M0** (generic CFG + GE decoder), **M1** (GE
+  engine), and **M2** (the Archimedes `strategy_spec` Target) implemented; M3
+  (operator coverage) + M4 (release) next. See
   [`evoforge-grammar/README.md`](evoforge-grammar/README.md).
 
 

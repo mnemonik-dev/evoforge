@@ -19,7 +19,12 @@ new operator code.
 - **M0** — generic CFG types (`grammar`) + the GE decoder (`decode`).
 - **M1** — codons as evoforge genes (`codon`), the `Target`/`Fitness` traits
   (`target`), and `GrammarEngine` (`engine`).
-- Next: M2 Archimedes `strategy_spec` target · M3 operator coverage · M4 release.
+- **M2** — the **Archimedes `strategy_spec` Target** (`targets::archimedes`):
+  the DSL grammar, derivation→`strategy_spec` builder, semantic repair, a Rust
+  validity oracle, and an enum-conformance test vs `strategy_dsl.py`. Run
+  `cargo run --example evolve_faber`.
+- Next: M3 operator coverage · M4 release. (Real backtest + rigor-gate fitness
+  arrive later in the Python-bridge phase.)
 
 See the design + decisions in
 `genetic_algorithms/docs/technical-reference/gggp-implementation-spec.md`.

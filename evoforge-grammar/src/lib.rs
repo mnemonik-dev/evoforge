@@ -29,6 +29,7 @@ pub mod decode;
 pub mod engine;
 pub mod grammar;
 pub mod target;
+pub mod targets;
 
 pub use decode::{map, DerivNode, Derivation, MapConfig, MapError};
 pub use grammar::{Grammar, GrammarError, NtId, Production, Rule, SetId, Symbol, Terminal};
@@ -36,3 +37,4 @@ pub use grammar::{Grammar, GrammarError, NtId, Production, Rule, SetId, Symbol, 
 pub use codon::codon_schema;
 pub use engine::{Candidate, GrammarConfig, GrammarEngine, GrammarReport, GrammarSnapshot};
 pub use target::{Fitness, Target};
+pub use targets::archimedes::{archimedes_grammar, ArchimedesTarget};
